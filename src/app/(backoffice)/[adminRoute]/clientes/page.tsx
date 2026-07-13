@@ -226,7 +226,7 @@ export default async function CustomersPage({
                   </TableCell>
                   <TableCell className="text-right">
                     <Link href={getAdminUrl(`/clientes/${c.id}`)}>
-                      <Button variant="secondary" size="sm">Ver Perfil</Button>
+                      <Button variant="outline" size="sm">Ver Perfil</Button>
                     </Link>
                   </TableCell>
                 </TableRow>

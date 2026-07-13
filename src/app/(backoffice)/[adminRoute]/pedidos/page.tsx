@@ -229,7 +229,7 @@ export default async function OrdersPage({
                     <TableCell className="text-right font-medium">{formatCurrency(o.total)}</TableCell>
                     <TableCell className="text-right">
                       <Link href={getAdminUrl(`/pedidos/${o.id}`)}>
-                        <Button variant="secondary" size="sm">Detalhes</Button>
+                        <Button variant="outline" size="sm">Detalhes</Button>
                       </Link>
                     </TableCell>
                   </TableRow>

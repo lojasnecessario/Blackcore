@@ -174,7 +174,7 @@ export default async function CustomerDetailsPage({
               <CardContent>
                 <div className="text-lg font-bold">
                   {validOrders.length > 0 
-                    ? format(new Date(validOrders.sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0].created_at), "dd/MM/yyyy") 
+                    ? format(new Date(validOrders.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0].created_at), "dd/MM/yyyy") 
                     : '-'}
                 </div>
               </CardContent>
@@ -207,7 +207,7 @@ export default async function CustomerDetailsPage({
                           <TableCell className="text-right font-medium">{formatCurrency(o.total)}</TableCell>
                           <TableCell className="text-right">
                             <Link href={getAdminUrl(`/pedidos/${o.id}`)}>
-                              <Button variant="secondary" size="sm">Ver</Button>
+                              <Button variant="outline" size="sm">Ver</Button>
                             </Link>
                           </TableCell>
                         </TableRow>
