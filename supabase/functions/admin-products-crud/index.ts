@@ -13,8 +13,9 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUser = getSupabaseClient(req);
     
-    // 1. Validar se o usuário é Admin/Employee
-    const { data: { user }, error: authErr } = await supabaseUser.auth.getUser();
+    const authHeader = req.headers.get('Authorization');
+    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
+    const { data: { user }, error: authErr } = await supabaseUser.auth.getUser(token);
     if (authErr || !user) throw new Error('Usuário não autenticado');
 
     const { data: profile } = await supabaseUser.from('profiles').select('role').eq('id', user.id).single();

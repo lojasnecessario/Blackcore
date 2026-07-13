@@ -8,7 +8,9 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUser = getSupabaseClient(req);
     const supabaseAdmin = getServiceRoleClient();
-    const { data: { user } } = await supabaseUser.auth.getUser();
+    const authHeader = req.headers.get('Authorization');
+    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
+    const { data: { user } } = await supabaseUser.auth.getUser(token);
     
     const { items, shipping_address, billing_address, coupon_code, notes, service_id, cep } = await req.json();
 
