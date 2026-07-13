@@ -22,7 +22,7 @@ export default async function ProductsPage({
 
   let query = supabase
     .from('products')
-    .select('*, product_variants(price, sku), inventory_levels(available)')
+    .select('*, product_variants(price, sku)')
     .order('created_at', { ascending: false })
 
   if (search) {
@@ -33,6 +33,10 @@ export default async function ProductsPage({
   }
 
   const { data: products, error } = await query
+  
+  if (error) {
+    console.error('Erro ao buscar produtos:', error)
+  }
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
