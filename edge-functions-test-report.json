@@ -1,0 +1,159 @@
+[
+  {
+    "function": "calculate-cart (Válido)",
+    "payload": {
+      "items": [
+        {
+          "variant_id": "af20655c-7707-40e1-8110-762a15e52169",
+          "quantity": 2
+        }
+      ]
+    },
+    "response": {
+      "success": true,
+      "data": {
+        "subtotal": 199.8,
+        "discount": 0,
+        "total": 199.8
+      }
+    },
+    "status": "Aprovado",
+    "error": "Nenhum"
+  },
+  {
+    "function": "calculate-cart (Inválido)",
+    "payload": {
+      "items": [
+        {
+          "variant_id": "invalid-id",
+          "quantity": 1
+        }
+      ]
+    },
+    "response": {
+      "success": false,
+      "error": {
+        "code": "ERROR",
+        "message": "invalid input syntax for type uuid: \"invalid-id\""
+      }
+    },
+    "status": "Aprovado",
+    "error": "Nenhum"
+  },
+  {
+    "function": "apply-coupon (Inexistente)",
+    "payload": {
+      "cart_id": "no-cart",
+      "coupon_code": "FAKE100"
+    },
+    "response": {
+      "success": false,
+      "error": {
+        "code": "COUPON_NOT_FOUND",
+        "message": "Cupom inválido ou não encontrado"
+      }
+    },
+    "status": "Aprovado",
+    "error": "Nenhum"
+  },
+  {
+    "function": "create-checkout (Inválido)",
+    "payload": {
+      "items": [],
+      "coupon_code": ""
+    },
+    "response": {
+      "success": false,
+      "error": {
+        "code": "EMPTY_CART",
+        "message": "Carrinho vazio"
+      }
+    },
+    "status": "Aprovado",
+    "error": "Nenhum"
+  },
+  {
+    "function": "create-checkout (Válido)",
+    "payload": {
+      "items": [
+        {
+          "variant_id": "af20655c-7707-40e1-8110-762a15e52169",
+          "quantity": 1
+        }
+      ],
+      "shipping_address": {
+        "city": "SP"
+      }
+    },
+    "response": {
+      "success": true,
+      "data": {
+        "checkout_id": "579a7c7e-9ec7-457f-8d2f-993759eac00d",
+        "order_number": 4,
+        "total": 99.9,
+        "message": "Checkout criado e estoque reservado com sucesso"
+      }
+    },
+    "status": "Aprovado",
+    "error": "Nenhum"
+  },
+  {
+    "function": "create-order (mercadopago)",
+    "payload": {
+      "checkout_id": "579a7c7e-9ec7-457f-8d2f-993759eac00d",
+      "provider": "mercadopago"
+    },
+    "response": {
+      "success": true,
+      "data": {
+        "order_id": "579a7c7e-9ec7-457f-8d2f-993759eac00d",
+        "order_number": 4,
+        "payment": {
+          "provider": "mercadopago",
+          "external_id": "pref_mock_mp_1783038428482",
+          "checkout_url": "https://sandbox.mercadopago.com.br/checkout/v1/redirect?pref_id=pref_mock_mp_1783038428482",
+          "client_secret": ""
+        }
+      }
+    },
+    "status": "Aprovado",
+    "error": "Nenhum"
+  },
+  {
+    "function": "payment-webhook (APPROVED)",
+    "payload": {
+      "action": "payment.created",
+      "status": "approved",
+      "external_reference": "579a7c7e-9ec7-457f-8d2f-993759eac00d",
+      "data": {
+        "id": "txn_123"
+      }
+    },
+    "response": {
+      "success": true,
+      "data": {
+        "message": "Webhook processado com sucesso"
+      }
+    },
+    "status": "Aprovado",
+    "error": "Nenhum"
+  },
+  {
+    "function": "admin-products-crud (Auth Falha Esperada)",
+    "payload": {
+      "action": "CREATE",
+      "product": {
+        "name": "Test"
+      }
+    },
+    "response": {
+      "success": false,
+      "error": {
+        "code": "ERROR",
+        "message": "Usuário não autenticado"
+      }
+    },
+    "status": "Aprovado",
+    "error": "Nenhum"
+  }
+]

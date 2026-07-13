@@ -1,0 +1,101 @@
+async function testAuth() {
+  console.log("=== INICIANDO TESTE E2E DE AUTENTICAÇÃO NO NEXT.JS ===");
+  
+  const baseUrl = "http://localhost:3000";
+  const report: any[] = [];
+  
+  const addReport = (testName: string, passed: boolean, details: string) => {
+    report.push({ test: testName, status: passed ? 'PASS' : 'FAIL', details });
+    console.log(`[${passed ? 'PASS' : 'FAIL'}] ${testName} - ${details}`);
+  };
+
+  // Helper para extrair cookies
+  const extractCookies = (res) => {
+    const raw = res.headers.get('set-cookie');
+    if (!raw) return '';
+    // Pegar tudo antes do primeiro ponto e vírgula de cada cookie
+    return raw.split(',').map(c => c.split(';')[0]).join('; ');
+  };
+
+  try {
+    // 1. Acesso sem login ao Dashboard
+    console.log("Testando acesso sem login ao Dashboard...");
+    const resNoAuth = await fetch(`${baseUrl}/admin/dashboard`, { redirect: 'manual' });
+    if (resNoAuth.status === 307 && resNoAuth.headers.get('location')?.includes('/admin/login')) {
+      addReport('Redirecionamento sem login', true, 'Acesso bloqueado com sucesso (307 redirect)');
+    } else {
+      addReport('Redirecionamento sem login', false, `Esperado 307, recebido ${resNoAuth.status}`);
+    }
+
+    // 2. Login com Admin
+    console.log("Autenticando usuário Admin na rota local...");
+    const adminLogin = await fetch(`${baseUrl}/api/test-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'admin@blackcore.com', password: 'adminpassword123' })
+    });
+    
+    if (adminLogin.status !== 200) {
+      console.error("Erro no login do admin", await adminLogin.text());
+      Deno.exit(1);
+    }
+    
+    const adminCookies = extractCookies(adminLogin);
+    console.log("Cookies Admin extraídos:", adminCookies.substring(0, 50) + "...");
+
+    console.log("Testando acesso com Cookie Admin ao Dashboard...");
+    const resAdmin = await fetch(`${baseUrl}/admin/dashboard`, {
+      redirect: 'manual',
+      headers: { 'Cookie': adminCookies }
+    });
+
+    if (resAdmin.status === 200) {
+      addReport('Acesso Admin (Dashboard)', true, 'Acesso liberado com sucesso (200 OK)');
+    } else {
+      addReport('Acesso Admin (Dashboard)', false, `Esperado 200, recebido ${resAdmin.status} - ${resAdmin.headers.get('location')}`);
+    }
+    
+    // 3. Login com Cliente
+    console.log("Autenticando usuário Cliente na rota local...");
+    const clientLogin = await fetch(`${baseUrl}/api/test-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'cliente@blackcore.com', password: 'clientepassword123' })
+    });
+    const clientCookies = extractCookies(clientLogin);
+
+    console.log("Testando acesso com Cookie Cliente ao Dashboard...");
+    const resClient = await fetch(`${baseUrl}/admin/dashboard`, {
+      redirect: 'manual',
+      headers: { 'Cookie': clientCookies }
+    });
+
+    if (resClient.status === 307 && resClient.headers.get('location')?.includes('error=unauthorized')) {
+      addReport('Redirecionamento sem permissão (Cliente)', true, 'Bloqueado e redirecionado com error=unauthorized');
+    } else {
+       addReport('Redirecionamento sem permissão (Cliente)', false, `Esperado 307 com erro, recebido ${resClient.status}`);
+    }
+
+    // 4. Logout (Rota POST /auth/signout)
+    console.log("Testando Rota de Signout...");
+    const resLogout = await fetch(`${baseUrl}/auth/signout`, {
+      method: 'POST',
+      redirect: 'manual',
+      headers: { 'Cookie': adminCookies }
+    });
+    
+    if (resLogout.status === 307 && resLogout.headers.get('location')?.includes('/admin/login')) {
+      addReport('Signout do Admin', true, 'Redirecionou para login com sucesso (307 redirect)');
+    } else {
+      addReport('Signout do Admin', false, `Falhou. Status: ${resLogout.status}`);
+    }
+
+    Deno.writeTextFileSync("auth-test-report.json", JSON.stringify(report, null, 2));
+    console.log("Relatório salvo em auth-test-report.json");
+
+  } catch (error) {
+    console.error("Erro fatal durante os testes:", error);
+  }
+}
+
+testAuth();

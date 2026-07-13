@@ -1,0 +1,22 @@
+[
+  {
+    "test": "Redirecionamento sem login",
+    "status": "PASS",
+    "details": "Acesso bloqueado com sucesso (307 redirect)"
+  },
+  {
+    "test": "Acesso Admin (Dashboard)",
+    "status": "PASS",
+    "details": "Acesso liberado com sucesso (200 OK)"
+  },
+  {
+    "test": "Redirecionamento sem permissão (Cliente)",
+    "status": "PASS",
+    "details": "Bloqueado e redirecionado com error=unauthorized"
+  },
+  {
+    "test": "Signout do Admin",
+    "status": "PASS",
+    "details": "Redirecionou para login com sucesso (307 redirect)"
+  }
+]
