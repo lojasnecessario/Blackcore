@@ -1,0 +1,1 @@
+import postgres from 'https://deno.land/x/postgresjs/mod.js'; const sql = postgres('postgresql://postgres:26102789Jy!%23@db.tgfmggkekjqxyrkgwvjp.supabase.co:5432/postgres'); const text = Deno.readTextFileSync('supabase/migrations/20260713110000_fase_g_checkout.sql'); await sql.unsafe(text); console.log('Sucesso!'); Deno.exit(0);  
