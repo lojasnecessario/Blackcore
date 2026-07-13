@@ -111,6 +111,7 @@ export default function ImportProductsPage() {
     setIsImporting(true)
     let successCount = 0
     let failedCount = 0
+    let errors: string[] = []
     
     setImportStatus({ total: parsedData.length, success: 0, failed: 0 })
 
@@ -151,21 +152,33 @@ export default function ImportProductsPage() {
           body: JSON.stringify(payload)
         })
 
-        const result = await response.json()
-        if (response.ok && result.success) {
+        const result = await response.json().catch(() => null)
+        
+        if (response.ok && result?.success) {
           successCount++
         } else {
           failedCount++
+          const errorMsg = result?.error?.message || result?.message || `HTTP ${response.status}: ${response.statusText}`
+          if (!errors.includes(errorMsg)) errors.push(errorMsg)
         }
-      } catch (err) {
+      } catch (err: any) {
         failedCount++
+        const errorMsg = err.message || 'Erro de rede desconhecido'
+        if (!errors.includes(errorMsg)) errors.push(errorMsg)
       }
 
       setImportStatus({ total: parsedData.length, success: successCount, failed: failedCount })
     }
 
     setIsImporting(false)
-    toast.success(`Importação concluída: ${successCount} salvos, ${failedCount} erros.`)
+    
+    if (successCount === 0) {
+      toast.error(`Falha total: Nenhum produto salvo. Motivo: ${errors[0] || 'Desconhecido'}`)
+    } else if (failedCount > 0) {
+      toast.warning(`Parcial: ${successCount} salvos, mas ${failedCount} falharam. Erros comuns: ${errors[0]}`)
+    } else {
+      toast.success(`Importação 100% concluída: ${successCount} produtos salvos!`)
+    }
   }
 
   return (

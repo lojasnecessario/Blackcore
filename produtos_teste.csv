@@ -1,0 +1,5 @@
+nome,categoria,status,preco,preco_antigo,estoque,sku,imagens,descricao
+"Camiseta Blackcore Basic","Vestuário","ACTIVE","89.90","129.90","50","BC-CAM-001","https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500","Camiseta 100% algodão premium, corte minimalista."
+"Tênis Urban Step","Calçados","ACTIVE","299.90","350.00","15","BC-TEN-002","https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500","Tênis confortável para o dia a dia, estilo urbano."
+"Boné Aba Reta Classic","Acessórios","DRAFT","59.90","0","0","BC-BON-003","https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=500","Boné modelo snapback, ainda não lançado."
+"Jaqueta Corta Vento","Vestuário","ACTIVE","199.90","249.90","5","BC-JAQ-004","https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500|https://images.unsplash.com/photo-1520975954732-57dd22299614?auto=format&fit=crop&w=500","Jaqueta resistente à água."
