@@ -133,7 +133,7 @@ export function ProductAddToCart({ product }: ProductAddToCartProps) {
           className="flex-1 h-12 text-md" 
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          variant={isOutOfStock ? "secondary" : "default"}
+          variant={isOutOfStock ? "outline" : "default"}
         >
           {isOutOfStock ? 'Esgotado' : 'Adicionar ao Carrinho'}
         </Button>

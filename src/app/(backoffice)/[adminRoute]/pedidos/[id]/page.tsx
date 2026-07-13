@@ -8,7 +8,8 @@ import { OrderActions } from '@/components/admin/pedidos/order-actions'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { FileText, Activity } from 'lucide-react'
-
+import Link from 'next/link'
+import { getAdminUrl } from '@/lib/admin-url'
 export const dynamic = 'force-dynamic'
 
 export default async function OrderDetailsPage({

@@ -62,7 +62,7 @@ export function ProductImages({ images, onChange }: ProductImagesProps) {
                 <img src={url} alt="Produto" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                    {i !== 0 && (
-                     <Button size="icon" variant="secondary" type="button" onClick={() => setAsMain(i)} title="Definir como principal">
+                     <Button size="icon" variant="outline" type="button" onClick={() => setAsMain(i)} title="Definir como principal">
                        <Star className="h-4 w-4" />
                      </Button>
                    )}

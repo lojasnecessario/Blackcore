@@ -126,7 +126,7 @@ export function CouponForm({ initialData }: CouponFormProps) {
                 step="0.01"
                 min="0.1"
                 value={value} 
-                onChange={(e) => setValue(e.target.value)} 
+                onChange={(e) => setValue(e.target.value ? Number(e.target.value) : "")} 
                 placeholder={type === 'PERCENTAGE' ? "Ex: 10" : "Ex: 50.00"} 
                 required 
               />
@@ -137,7 +137,7 @@ export function CouponForm({ initialData }: CouponFormProps) {
                 type="number" 
                 step="0.01"
                 value={minOrder} 
-                onChange={(e) => setMinOrder(e.target.value)} 
+                onChange={(e) => setMinOrder(e.target.value ? Number(e.target.value) : "")} 
                 placeholder="Ex: 150.00 (Opcional)" 
               />
             </div>
@@ -149,7 +149,7 @@ export function CouponForm({ initialData }: CouponFormProps) {
               <Input 
                 type="number" 
                 value={maxUses} 
-                onChange={(e) => setMaxUses(e.target.value)} 
+                onChange={(e) => setMaxUses(e.target.value ? Number(e.target.value) : "")} 
                 placeholder="Ex: 100 (Opcional)" 
               />
               <p className="text-xs text-muted-foreground">Deixe vazio para uso ilimitado.</p>
@@ -160,7 +160,7 @@ export function CouponForm({ initialData }: CouponFormProps) {
                 type="number" 
                 min="1"
                 value={maxUsesUser} 
-                onChange={(e) => setMaxUsesUser(e.target.value)} 
+                onChange={(e) => setMaxUsesUser(e.target.value ? Number(e.target.value) : "")} 
                 required 
               />
             </div>

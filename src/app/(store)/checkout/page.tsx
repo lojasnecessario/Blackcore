@@ -263,7 +263,7 @@ export default function CheckoutPage() {
               <Checkbox 
                 id="sameAddress" 
                 checked={sameAsShipping} 
-                onCheckedChange={(checked) => setSameAsShipping(checked === true)}
+                onChange={(e) => setSameAsShipping(e.target.checked)}
                 disabled={loading}
               />
               <Label htmlFor="sameAddress" className="cursor-pointer">Usar o mesmo endereço de entrega</Label>
