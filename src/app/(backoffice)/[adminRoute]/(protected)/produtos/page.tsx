@@ -53,12 +53,19 @@ export default async function ProductsPage({
         title="Produtos" 
         description="Gerencie o catálogo, preços e imagens da sua loja."
         actions={
-          <Link href={getAdminUrl('/produtos/novo')}>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Novo Produto
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href={getAdminUrl('/produtos/importar')}>
+              <Button variant="outline">
+                Importar CSV
+              </Button>
+            </Link>
+            <Link href={getAdminUrl('/produtos/novo')}>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Novo Produto
+              </Button>
+            </Link>
+          </div>
         }
       />
 
