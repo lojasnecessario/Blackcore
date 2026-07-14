@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { LayoutDashboard, Package, ShoppingBag, Users, FolderTree, Ticket, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingBag, Users, FolderTree, Ticket, Settings, LogOut, LayoutTemplate } from 'lucide-react'
 import { Toaster } from 'sonner'
 import { getAdminUrl } from '@/lib/admin-url'
 
@@ -31,6 +31,7 @@ export default async function AdminLayout({
 
   const navItems = [
     { name: 'Dashboard', href: getAdminUrl('/dashboard'), icon: LayoutDashboard },
+    { name: 'Editor da Home', href: getAdminUrl('/home-editor'), icon: LayoutTemplate },
     { name: 'Produtos', href: getAdminUrl('/produtos'), icon: Package },
     { name: 'Pedidos', href: getAdminUrl('/pedidos'), icon: ShoppingBag },
     { name: 'Clientes', href: getAdminUrl('/clientes'), icon: Users },
