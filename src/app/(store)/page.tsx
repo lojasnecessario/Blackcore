@@ -3,8 +3,8 @@ import { ProductCard } from '@/components/store/product-card'
 import Link from 'next/link'
 import { Button } from '@/components/admin/ui/button'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 60 // ISR de 1 minuto para a Home
+export const dynamic = 'force-static' // Will be ISR via revalidate
+export const revalidate = 30 // ISR de 30 segundos para a Home
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -21,11 +21,10 @@ export default async function HomePage() {
     `)
     .eq('status', 'ACTIVE')
     .order('created_at', { ascending: false })
-    .limit(12)
+    .limit(16)
 
-  // Opcional: Separar por Destaques e Novidades no JS para não fazer 2 queries
-  const featured = products?.slice(0, 4) || []
-  const newArrivals = products?.slice(4, 12) || []
+  // Removeremos os arrays hardcoded (slice) conforme diretriz do Sprint 1
+  const newArrivals = products || []
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -50,27 +49,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Destaques */}
-      <section className="py-24 container px-4 mx-auto">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Destaques</h2>
-            <p className="text-muted-foreground mt-2">Os mais desejados do momento.</p>
-          </div>
-        </div>
-        
-        {featured.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            {featured.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 text-muted-foreground">
-            Nenhum produto em destaque.
-          </div>
-        )}
-      </section>
+      {/* Destaques (Será reconstruído dinamicamente na Sprint 6) */}
 
       {/* Categoria Showcase */}
       <section className="py-16 bg-muted/30">
