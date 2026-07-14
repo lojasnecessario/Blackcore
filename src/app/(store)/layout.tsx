@@ -25,7 +25,7 @@ export default async function StoreLayout({
               BLACK<span className="text-primary">CORE</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-              {menuCategories?.map(cat => (
+              {menuCategories?.map((cat: any) => (
                 <Link key={cat.id} href={`/categoria/${cat.slug}`} className="transition-colors hover:text-primary uppercase">
                   {cat.name}
                 </Link>

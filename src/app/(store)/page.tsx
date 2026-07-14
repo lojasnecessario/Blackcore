@@ -17,7 +17,7 @@ export default async function HomePage() {
   if (blocks && blocks.length > 0) {
     return (
       <div className="flex flex-col min-h-screen">
-        {blocks.map((block) => {
+        {blocks.map((block: any) => {
           if (block.type === 'hero') {
             return (
               <section key={block.id} className="relative bg-zinc-950 text-white overflow-hidden h-[70vh] flex items-center">
@@ -133,7 +133,7 @@ export default async function HomePage() {
         <section className="py-16 bg-muted/30">
           <div className="container px-4 mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {homeCategories.map(cat => (
+              {homeCategories.map((cat: any) => (
                 <Link key={cat.id} href={`/categoria/${cat.slug}`} className="group relative h-[400px] overflow-hidden rounded-2xl bg-zinc-900 flex items-center justify-center">
                   <div 
                     className="absolute inset-0 opacity-50 group-hover:opacity-60 transition-opacity bg-cover bg-center" 
@@ -156,7 +156,7 @@ export default async function HomePage() {
         </div>
         {displayNewArrivals.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            {displayNewArrivals.map((p) => (
+            {displayNewArrivals.map((p: any) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
@@ -189,7 +189,7 @@ async function CategoriesShowcase({ limit }: { limit: number | null }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {homeCategories.map(cat => (
+      {homeCategories.map((cat: any) => (
         <Link key={cat.id} href={`/categoria/${cat.slug}`} className="group relative h-[400px] overflow-hidden rounded-2xl bg-zinc-900 flex items-center justify-center">
           <div 
             className="absolute inset-0 opacity-50 group-hover:opacity-60 transition-opacity bg-cover bg-center" 
