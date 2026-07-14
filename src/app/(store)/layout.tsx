@@ -77,7 +77,7 @@ export default async function StoreLayout({
           <div>
             <h3 className="font-semibold mb-4">Departamentos</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              {menuCategories?.map(cat => (
+              {menuCategories?.map((cat: any) => (
                 <li key={`footer-${cat.id}`}>
                   <Link href={`/categoria/${cat.slug}`} className="hover:text-primary uppercase">{cat.name}</Link>
                 </li>
