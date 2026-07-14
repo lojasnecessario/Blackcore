@@ -91,7 +91,7 @@ export function CategoryProducts({ categoryId, categoryName, sortRule }: { categ
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Ordenação de Produtos (Manual)</CardTitle>
-        <Button onClick={saveOrder} disabled={saving || loading} variant="secondary">
+        <Button onClick={saveOrder} disabled={saving || loading} variant="outline">
           {saving ? 'Salvando...' : 'Salvar Ordem'}
         </Button>
       </CardHeader>
