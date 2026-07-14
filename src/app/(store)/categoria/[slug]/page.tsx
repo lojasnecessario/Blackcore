@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { ProductCard } from '@/components/store/product-card'
 import { notFound } from 'next/navigation'
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-static' // Will be ISR via revalidate
+export const revalidate = 60 // ISR de 60 segundos para Categorias
 
 export default async function CategoryPage({
   params,
@@ -15,7 +16,7 @@ export default async function CategoryPage({
   // Decodifica o slug (ex: vestuario) e faz o match case-insensitive
   const decodedSlug = decodeURIComponent(slug).toLowerCase()
 
-  const { data: products } = await supabase
+  const { data: allProducts } = await supabase
     .from('products')
     .select(`
       id, name, slug, images, category, 
@@ -25,8 +26,15 @@ export default async function CategoryPage({
       )
     `)
     .eq('status', 'ACTIVE')
-    .ilike('category', decodedSlug)
     .order('created_at', { ascending: false })
+
+  // Temporário para o Sprint 1: Filtrar ignorando acentos até termos a tabela de categorias com slug
+  const products = allProducts?.filter(p => {
+    if (!p.category) return false
+    const catNormalized = p.category.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    const slugNormalized = decodedSlug.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    return catNormalized === slugNormalized
+  }) || []
 
   if (!products || products.length === 0) {
     // Pode exibir vazio, mas não 404, porque a categoria pode só estar sem produtos temporariamente
