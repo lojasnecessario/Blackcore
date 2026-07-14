@@ -3,11 +3,16 @@ import { Search, ShoppingBag, User } from 'lucide-react'
 import { CartProvider } from '@/contexts/cart-context'
 import { CartDrawer } from '@/components/store/cart-drawer'
 
-export default function StoreLayout({
+import { createClient } from '@/lib/supabase/server'
+
+export default async function StoreLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient()
+  const { data: globalData } = await supabase.rpc('get_storefront_data')
+  const menuCategories = globalData?.menuCategories || []
   return (
     <CartProvider>
       <div className="flex min-h-screen flex-col">
@@ -20,9 +25,11 @@ export default function StoreLayout({
               BLACK<span className="text-primary">CORE</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <Link href="/categoria/vestuario" className="transition-colors hover:text-primary">Vestuário</Link>
-              <Link href="/categoria/acessorios" className="transition-colors hover:text-primary">Acessórios</Link>
-              <Link href="/categoria/calcados" className="transition-colors hover:text-primary">Calçados</Link>
+              {menuCategories?.map(cat => (
+                <Link key={cat.id} href={`/categoria/${cat.slug}`} className="transition-colors hover:text-primary uppercase">
+                  {cat.name}
+                </Link>
+              ))}
             </nav>
           </div>
 
@@ -70,9 +77,11 @@ export default function StoreLayout({
           <div>
             <h3 className="font-semibold mb-4">Departamentos</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/categoria/vestuario" className="hover:text-primary">Vestuário</Link></li>
-              <li><Link href="/categoria/acessorios" className="hover:text-primary">Acessórios</Link></li>
-              <li><Link href="/categoria/calcados" className="hover:text-primary">Calçados</Link></li>
+              {menuCategories?.map(cat => (
+                <li key={`footer-${cat.id}`}>
+                  <Link href={`/categoria/${cat.slug}`} className="hover:text-primary uppercase">{cat.name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div>

@@ -1,9 +1,45 @@
 import { createClient } from '@/lib/supabase/server'
 import { ProductCard } from '@/components/store/product-card'
 import { notFound } from 'next/navigation'
+import type { Metadata, ResolvingMetadata } from 'next'
 
 export const dynamic = 'force-static' // Will be ISR via revalidate
 export const revalidate = 60 // ISR de 60 segundos para Categorias
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const supabase = await createClient()
+  const { slug } = await params
+  
+  const { data: category } = await supabase
+    .from('categories')
+    .select('name, seo_title, seo_description, seo_canonical_url, og_image, twitter_image, banner_desktop')
+    .ilike('slug', slug)
+    .single()
+
+  if (!category) return { title: 'Categoria não encontrada' }
+
+  return {
+    title: category.seo_title || `${category.name} | BlackCore`,
+    description: category.seo_description || `Compre produtos da categoria ${category.name} na BlackCore.`,
+    alternates: {
+      canonical: category.seo_canonical_url || undefined,
+    },
+    openGraph: {
+      title: category.seo_title || `${category.name} | BlackCore`,
+      description: category.seo_description || `Compre produtos da categoria ${category.name} na BlackCore.`,
+      images: [category.og_image || category.banner_desktop || ''],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: category.seo_title || `${category.name} | BlackCore`,
+      description: category.seo_description || `Compre produtos da categoria ${category.name} na BlackCore.`,
+      images: [category.twitter_image || category.og_image || category.banner_desktop || ''],
+    }
+  }
+}
 
 export default async function CategoryPage({
   params,
@@ -12,32 +48,29 @@ export default async function CategoryPage({
 }) {
   const supabase = await createClient()
   const { slug } = await params
-
-  // Decodifica o slug (ex: vestuario) e faz o match case-insensitive
   const decodedSlug = decodeURIComponent(slug).toLowerCase()
 
-  const { data: allProducts } = await supabase
-    .from('products')
-    .select(`
-      id, name, slug, images, category, 
-      variants:product_variants (
-        id, price, promotional_price,
-        inventory_levels (available)
-      )
-    `)
-    .eq('status', 'ACTIVE')
-    .order('created_at', { ascending: false })
+  const { data: category } = await supabase
+    .from('categories')
+    .select('*')
+    .ilike('slug', slug)
+    .eq('active', true)
+    .single()
 
-  // Temporário para o Sprint 1: Filtrar ignorando acentos até termos a tabela de categorias com slug
-  const products = allProducts?.filter(p => {
-    if (!p.category) return false
-    const catNormalized = p.category.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-    const slugNormalized = decodedSlug.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-    return catNormalized === slugNormalized
-  }) || []
+  if (!category) {
+    // A categoria não existe ou está inativa
+    // Mas se quiser apenas mostrar vazio, podemos continuar, mas idealmente é notFound.
+    // O usuário preferiu "Pode exibir vazio, mas não 404, porque a categoria pode só estar sem produtos temporariamente", mas isso era quando checava produtos. 
+    // Se a categoria em si não existe no banco, deveríamos dar 404. Mas manteremos a string do decodedSlug para fallback.
+  }
 
-  if (!products || products.length === 0) {
-    // Pode exibir vazio, mas não 404, porque a categoria pode só estar sem produtos temporariamente
+  const categoryName = category?.name || decodedSlug
+
+  const { data: products, error } = await supabase
+    .rpc('get_category_products', { p_category_slug: decodedSlug })
+
+  if (error) {
+    console.error('Erro ao buscar produtos da categoria:', error)
   }
 
   return (

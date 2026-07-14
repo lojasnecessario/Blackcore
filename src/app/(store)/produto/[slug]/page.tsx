@@ -15,7 +15,7 @@ export async function generateMetadata(
   
   const { data: product } = await supabase
     .from('products')
-    .select('name, seo_title, seo_description, images')
+    .select('name, seo_title, seo_description, images, seo_canonical_url, og_image, twitter_image')
     .eq('slug', slug)
     .single()
 
@@ -24,9 +24,20 @@ export async function generateMetadata(
   return {
     title: product.seo_title || `${product.name} | BlackCore`,
     description: product.seo_description || `Compre ${product.name} na BlackCore.`,
-    openGraph: {
-      images: [product.images?.[0] || ''],
+    alternates: {
+      canonical: product.seo_canonical_url || undefined,
     },
+    openGraph: {
+      title: product.seo_title || `${product.name} | BlackCore`,
+      description: product.seo_description || `Compre ${product.name} na BlackCore.`,
+      images: [product.og_image || product.images?.[0] || ''],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.seo_title || `${product.name} | BlackCore`,
+      description: product.seo_description || `Compre ${product.name} na BlackCore.`,
+      images: [product.twitter_image || product.og_image || product.images?.[0] || ''],
+    }
   }
 }
 
